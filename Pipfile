@@ -9,7 +9,8 @@ speechrecognition = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.9"
 
 [scripts]
 main = "pipenv run python src/main.py"
+test = "pipenv run python src/test.py"
