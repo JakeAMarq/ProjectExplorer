@@ -5,11 +5,12 @@ name = "pypi"
 
 [packages]
 speechrecognition = "*"
+pyaudio = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.6"
 
 [scripts]
 main = "pipenv run python src/main.py"

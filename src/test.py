@@ -8,16 +8,17 @@ def test_(self):
     self.assertEqual(func(input), expected) 
 """
 
-class path_utils_test(unittest.TestCase):
+
+class PathUtilsTest(unittest.TestCase):
 
     def test_parse_path(self):
-        input = "c slash program files slash riot games"
+        input_str = "c slash program files slash riot games"
         expected = "c/program files/riot games"
-        self.assertEqual(path_utils.parse_path(input), expected) 
+        self.assertEqual(path_utils.parse_path(input_str), expected)
 
-    # def test_get_possible_directory_variations(self):
+        # def test_get_possible_directory_variations(self):
     #     testcases = ["c: slash test dir slash inner test dir", "c: idk", "c: slash idk"]
-        
+
     #     for case in testcases:
     #         print("Input: " + str(case))
     #         try:

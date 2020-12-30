@@ -2,16 +2,21 @@ import os
 
 SEPARATOR_WORD = "slash"
 
+
 def remove_spaces(string):
     return "".join(string.split(" "))
+
 
 def convert_to_snake_case(string):
     return "_".join(string.split(" "))
 
+
 DIRECTORY_VARIATION_TRANSFORMERS = [lambda x: x, remove_spaces, convert_to_snake_case]
+
 
 def get_possible_directory_variations(directory):
     return [transform(directory) for transform in DIRECTORY_VARIATION_TRANSFORMERS]
+
 
 def parse_path(string):
     if not isinstance(string, str):
@@ -22,19 +27,24 @@ def parse_path(string):
     path = path.replace("/ ", "/")
     return path
 
+
 def path_exists(path):
     return os.path.exists(path)
+
 
 def open_path(path):
     path = "C:/" + path
     path = os.path.realpath(path)
-    os.startfile(path)  
+    os.startfile(path)
+
 
 def convert_list_to_path(list):
     return "/".join(list)
 
+
 def convert_path_to_list(path):
     return path.split("/")
+
 
 def get_valid_path_variations(path):
     """
@@ -53,27 +63,26 @@ def get_valid_path_variations(path):
 
     directories = convert_path_to_list(path)
     drive = directories.pop(0)
-    validPathVariations = [[drive]]
+    valid_path_variations = [[drive]]
 
     if not path_exists(drive):
         return []
 
     for directory in directories:
-        if len(validPathVariations) == 0:
+        if len(valid_path_variations) == 0:
             return []
 
-        possibleVariations = get_possible_directory_variations(directory)
+        possible_variations = get_possible_directory_variations(directory)
 
-        newValidPathVariations = []
-        for path in validPathVariations:
-            pathString = convert_list_to_path(path)
+        new_valid_path_variations = []
+        for path in valid_path_variations:
+            path_string = convert_list_to_path(path)
 
-            for possibleVariation in possibleVariations:
-                possiblePath = pathString + "/" + possibleVariation
-                if path_exists(possiblePath):
-                    newValidPathVariations.append(path + [possibleVariation])
+            for possibleVariation in possible_variations:
+                possible_path = path_string + "/" + possibleVariation
+                if path_exists(possible_path):
+                    new_valid_path_variations.append(path + [possibleVariation])
 
-        validPathVariations = newValidPathVariations[::]
+        valid_path_variations = new_valid_path_variations[::]
 
-
-    return [convert_list_to_path(path) for path in validPathVariations]
+    return [convert_list_to_path(path) for path in valid_path_variations]
