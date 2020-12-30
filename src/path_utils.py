@@ -1,6 +1,7 @@
 import os
 
 SEPARATOR_WORD = "slash"
+PROJECT_NAME = "ProjectExplorer"
 
 
 def remove_spaces(string):
@@ -12,6 +13,14 @@ def convert_to_snake_case(string):
 
 
 DIRECTORY_VARIATION_TRANSFORMERS = [lambda x: x, remove_spaces, convert_to_snake_case]
+
+
+def get_project_root_path():
+    path = os.getcwd()
+    path = path.split("\\")
+    while (path[-1] != PROJECT_NAME):
+        path.pop()
+    return "\\".join(path)
 
 
 def get_possible_directory_variations(directory):

@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 speechrecognition = "*"
 pyaudio = "*"
+"infi.systray" = "*"
 
 [dev-packages]
 

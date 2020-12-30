@@ -17,6 +17,13 @@
             "request": "launch",
             "program": "./src/test.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "system_tray_demo",
+            "type": "python",
+            "request": "launch",
+            "program": "./src/system_tray_demo.py",
+            "console": "integratedTerminal"
         }
     ]
 }
