@@ -1,29 +1,17 @@
 import os
+import subprocess
+from constants import Constants
 
-SEPARATOR_WORD = "slash"
-PROJECT_NAME = "ProjectExplorer"
-
-
-def remove_spaces(string):
-    return "".join(string.split(" "))
-
-
-def convert_to_snake_case(string):
-    return "_".join(string.split(" "))
-
-
-DIRECTORY_VARIATION_TRANSFORMERS = [lambda x: x, remove_spaces, convert_to_snake_case]
-
-
-def get_project_root_path():
-    path = os.getcwd()
-    path = path.split("\\")
-    while (path[-1] != PROJECT_NAME):
-        path.pop()
-    return "\\".join(path)
+DIRECTORY_VARIATION_TRANSFORMERS = [lambda dir: dir,                        # no variation
+                                    lambda dir: "".join(dir.split(" ")),    # remove spaces
+                                    lambda dir: "_".join(dir.split(" ")),   # separate with underscores
+                                    lambda dir: "-".join(dir.split(" "))]   # separate with hyphens
 
 
 def get_possible_directory_variations(directory):
+    if directory.find(" ") < 0: 
+        return [directory]
+
     return [transform(directory) for transform in DIRECTORY_VARIATION_TRANSFORMERS]
 
 
@@ -31,28 +19,35 @@ def parse_path(string):
     if not isinstance(string, str):
         raise ValueError("string argument must be a str")
 
-    path = string.lower().replace(SEPARATOR_WORD, "/")
-    path = path.replace(" /", "/")
-    path = path.replace("/ ", "/")
+    path = string.lower().replace(Constants.SEPARATOR_WORD, Constants.SEPARATOR_CHAR)
+    path = path.replace(" " + Constants.SEPARATOR_CHAR, Constants.SEPARATOR_CHAR)
+    path = path.replace(Constants.SEPARATOR_CHAR + " ", Constants.SEPARATOR_CHAR)
     return path
 
 
 def path_exists(path):
-    return os.path.exists(path)
+    return (os.path.exists(path) or 
+    os.path.exists(Constants.SEPARATOR_CHAR + path + Constants.SEPARATOR_CHAR) or
+    os.path.exists(Constants.SEPARATOR_CHAR + path) or
+    os.path.exists(path + Constants.SEPARATOR_CHAR))
 
 
 def open_path(path):
-    path = "C:/" + path
     path = os.path.realpath(path)
-    os.startfile(path)
+    if Constants.OPERATING_SYSTEM == "Windows":
+        os.startfile(path)
+    elif Constants.OPERATING_SYSTEM == "Darwin":
+        subprocess.Popen(["open", path])
+    else:
+        subprocess.Popen(["xdg-open", path])
 
 
 def convert_list_to_path(list):
-    return "/".join(list)
+    return Constants.SEPARATOR_CHAR.join(list)
 
 
 def convert_path_to_list(path):
-    return path.split("/")
+    return path.split(Constants.SEPARATOR_CHAR)
 
 
 def get_valid_path_variations(path):
@@ -71,10 +66,17 @@ def get_valid_path_variations(path):
         raise ValueError("path argument cannot be an empty str")
 
     directories = convert_path_to_list(path)
-    drive = directories.pop(0)
-    valid_path_variations = [[drive]]
 
-    if not path_exists(drive):
+    root = ""
+    while root == "":
+        root = directories.pop(0)
+
+    if Constants.OPERATING_SYSTEM != "Windows":
+        root = "/" + root
+
+    valid_path_variations = [[root]]
+
+    if not path_exists(root):
         return []
 
     for directory in directories:
@@ -88,7 +90,7 @@ def get_valid_path_variations(path):
             path_string = convert_list_to_path(path)
 
             for possibleVariation in possible_variations:
-                possible_path = path_string + "/" + possibleVariation
+                possible_path = path_string + Constants.SEPARATOR_CHAR + possibleVariation
                 if path_exists(possible_path):
                     new_valid_path_variations.append(path + [possibleVariation])
 
