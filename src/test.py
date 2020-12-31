@@ -5,7 +5,6 @@ from shutil import rmtree
 from collections import Counter
 
 
-
 class PathUtilsTest(unittest.TestCase):
 
     def test_parse_path(self):
@@ -23,7 +22,7 @@ class PathUtilsTest(unittest.TestCase):
         actual = get_valid_path_variations(Constants.PROJECT_DIRECTORY + "/testdirectory/test dir/inner test dir")
         expected = [test_path_1, test_path_2]
 
-        self.assertEqual(Counter(actual), Counter(expected)) # compares contents of two lists ignoring order
+        self.assertEqual(Counter(actual), Counter(expected))  # compares contents of two lists ignoring order
 
         # Remove test directories
         rmtree(Constants.PROJECT_DIRECTORY + "/testdirectory/")

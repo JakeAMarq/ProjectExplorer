@@ -9,7 +9,7 @@ DIRECTORY_VARIATION_TRANSFORMERS = [lambda dir: dir,                        # no
 
 
 def get_possible_directory_variations(directory):
-    if directory.find(" ") < 0: 
+    if directory.find(" ") < 0:
         return [directory]
 
     return [transform(directory) for transform in DIRECTORY_VARIATION_TRANSFORMERS]
@@ -19,8 +19,6 @@ def parse_path(string):
     if not isinstance(string, str):
         raise ValueError("string argument must be a str")
 
-
-    
     path = string.strip()
     path = path.lower().replace(Constants.SEPARATOR_WORD, Constants.SEPARATOR_CHAR)
     path = path.replace("/", Constants.SEPARATOR_CHAR)
@@ -30,17 +28,17 @@ def parse_path(string):
 
     path = path.split(Constants.SEPARATOR_CHAR)
 
-    if (Constants.DRIVES.count(path[0].upper()) > 0):
+    if Constants.DRIVES.count(path[0].upper()) > 0:
         path[0] = path[0] + ":"
 
     return Constants.SEPARATOR_CHAR.join(path)
 
 
 def path_exists(path):
-    return (os.path.exists(path) or 
-    os.path.exists(Constants.SEPARATOR_CHAR + path + Constants.SEPARATOR_CHAR) or
-    os.path.exists(Constants.SEPARATOR_CHAR + path) or
-    os.path.exists(path + Constants.SEPARATOR_CHAR))
+    return (os.path.exists(path) or
+            os.path.exists(Constants.SEPARATOR_CHAR + path + Constants.SEPARATOR_CHAR) or
+            os.path.exists(Constants.SEPARATOR_CHAR + path) or
+            os.path.exists(path + Constants.SEPARATOR_CHAR))
 
 
 def open_path(path):
