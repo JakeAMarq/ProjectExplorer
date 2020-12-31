@@ -19,10 +19,21 @@ def parse_path(string):
     if not isinstance(string, str):
         raise ValueError("string argument must be a str")
 
-    path = string.lower().replace(Constants.SEPARATOR_WORD, Constants.SEPARATOR_CHAR)
+
+    
+    path = string.strip()
+    path = path.lower().replace(Constants.SEPARATOR_WORD, Constants.SEPARATOR_CHAR)
+    path = path.replace("/", Constants.SEPARATOR_CHAR)
+    path = path.replace("\\", Constants.SEPARATOR_CHAR)
     path = path.replace(" " + Constants.SEPARATOR_CHAR, Constants.SEPARATOR_CHAR)
     path = path.replace(Constants.SEPARATOR_CHAR + " ", Constants.SEPARATOR_CHAR)
-    return path
+
+    path = path.split(Constants.SEPARATOR_CHAR)
+
+    if (Constants.DRIVES.count(path[0].upper()) > 0):
+        path[0] = path[0] + ":"
+
+    return Constants.SEPARATOR_CHAR.join(path)
 
 
 def path_exists(path):

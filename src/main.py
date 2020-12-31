@@ -1,4 +1,5 @@
 import speech_recognition as sr
+from constants import Constants
 from path_utils import *
 
 
@@ -15,11 +16,17 @@ def main():
             # for testing purposes, we're just using the default API key
             # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
             # instead of `r.recognize_google(audio)`
-            voice_input = recognizer.recognize_google(audio)
+            voice_input = recognizer.recognize_google(audio).lower()
             print("Google Speech Recognition thinks you said: \"" + voice_input + "\"")
-            if voice_input.startswith("go to"):
-                path = parse_path(voice_input[6:])
-                open_path(path)
+            if voice_input.startswith(Constants.ACTIVATION_PHRASE):
+                voice_input = voice_input[len(Constants.ACTIVATION_PHRASE):]
+                path = parse_path(voice_input)
+                
+                try:
+                    open_path(path)
+                except Exception as exception:
+                    print("Exception caught: " + str(exception))
+                    
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as e:

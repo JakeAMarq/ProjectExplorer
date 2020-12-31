@@ -1,20 +1,23 @@
+from constants import Constants
 from infi.systray import SysTrayIcon
-from path_utils import get_project_root_path
 
-application_icon_path = get_project_root_path() + "\\icons\\" + "python_icon.ico"
-hover_text = "SysTrayIcon Demo"
+application_icon_path = f"{Constants.PROJECT_DIRECTORY}{Constants.SEPARATOR_CHAR}icons{Constants.SEPARATOR_CHAR}python_icon.ico"
 
 
 def hello(sys_tray_icon):
     print("Hello World.")
 
+def example_setting_1(sys_tray_icon):
+    print("Example setting 1 clicked")
 
-def simon(sys_tray_icon):
-    print("Hello Simon.")
+
+def example_setting_2(sys_tray_icon):
+    print("Example setting 2 clicked")
 
 
-def bye(sys_tray_icon):
-    print("Bye, then.")
+def exit_application(sys_tray_icon):
+    # Whatever we need to take care of before application exits
+    exit()
 
 
 def do_nothing(sys_tray_icon):
@@ -22,10 +25,11 @@ def do_nothing(sys_tray_icon):
 
 
 menu_options = (('Say Hello', application_icon_path, hello),
-                ('Do nothing', None, do_nothing),
-                ('A sub-menu', application_icon_path, (('Say Hello to Simon', application_icon_path, simon),
-                                                       ('Do nothing', None, do_nothing),
-                                                       ))
+                ("Settings", application_icon_path, (("Example setting 1", application_icon_path, example_setting_1),
+                                                     ("Example setting 2", application_icon_path, example_setting_2),
+                                                     ))
                 )
-sysTrayIcon = SysTrayIcon(application_icon_path, hover_text, menu_options, on_quit=bye, default_menu_index=1)
+
+sysTrayIcon = SysTrayIcon(application_icon_path, Constants.PROJECT_NAME,
+                          menu_options, on_quit=exit_application, default_menu_index=1)
 sysTrayIcon.start()
