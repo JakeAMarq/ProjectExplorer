@@ -1,6 +1,9 @@
+import logging
 import os
 import subprocess
-from constants import Constants
+from src.constants import Constants
+
+logger = logging.getLogger(__name__)
 
 DIRECTORY_VARIATION_TRANSFORMERS = [lambda dir: dir,                        # no variation
                                     lambda dir: "".join(dir.split(" ")),    # remove spaces
@@ -17,7 +20,8 @@ def get_possible_directory_variations(directory):
 
 def parse_path(string):
     if not isinstance(string, str):
-        raise ValueError("string argument must be a str")
+        logger.error("parse_path :: non-str argument given")
+        return ""
 
     path = string.strip()
     path = path.lower().replace(Constants.SEPARATOR_WORD, Constants.SEPARATOR_CHAR)
@@ -43,9 +47,9 @@ def path_exists(path):
 
 def open_path(path):
     path = os.path.realpath(path)
-    if Constants.OPERATING_SYSTEM == "Windows":
+    if Constants.OPERATING_SYSTEM == Constants.WINDOWS:
         os.startfile(path)
-    elif Constants.OPERATING_SYSTEM == "Darwin":
+    elif Constants.OPERATING_SYSTEM == Constants.MAC_OS:
         subprocess.Popen(["open", path])
     else:
         subprocess.Popen(["xdg-open", path])
@@ -69,10 +73,12 @@ def get_valid_path_variations(path):
     """
 
     if not isinstance(path, str):
-        raise ValueError("path argument must be a str")
+        logger.error("get_valid_path_variations :: non-str argument given")
+        return []
 
     if path == "":
-        raise ValueError("path argument cannot be an empty str")
+        logger.error("get_valid_path_variations :: empty str argument given")
+        raise []
 
     directories = convert_path_to_list(path)
 

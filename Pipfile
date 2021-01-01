@@ -15,7 +15,5 @@ pyinstaller = "*"
 python_version = "3.6"
 
 [scripts]
-main = "pipenv run python src"
-test = "pipenv run python src/test.py"
-build = "pipenv run pyinstaller cli.py --onefile --name ProjectExplorer --noconfirm --hidden-import=pkg_resources -w"
-debugbuild = "pipenv run pyinstaller cli.py --onefile --name ProjectExplorer --noconfirm --hidden-import=pkg_resources --log-level=DEBUG"
+build-prod = "pipenv run pyinstaller --noconfirm ProjectExplorer-PRODUCTION.spec"
+build-debug = "pipenv run pyinstaller --noconfirm ProjectExplorer-DEBUG.spec"
