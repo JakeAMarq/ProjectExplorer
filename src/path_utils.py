@@ -5,18 +5,6 @@ from src.constants import Constants
 
 logger = logging.getLogger(__name__)
 
-DIRECTORY_VARIATION_TRANSFORMERS = [lambda dir: dir,                        # no variation
-                                    lambda dir: "".join(dir.split(" ")),    # remove spaces
-                                    lambda dir: "_".join(dir.split(" ")),   # separate with underscores
-                                    lambda dir: "-".join(dir.split(" "))]   # separate with hyphens
-
-
-def get_possible_directory_variations(directory):
-    if directory.find(" ") < 0:
-        return [directory]
-
-    return [transform(directory) for transform in DIRECTORY_VARIATION_TRANSFORMERS]
-
 
 def parse_path(string):
     if not isinstance(string, str):
@@ -61,6 +49,19 @@ def convert_list_to_path(list):
 
 def convert_path_to_list(path):
     return path.split(Constants.SEPARATOR_CHAR)
+
+
+DIRECTORY_VARIATION_TRANSFORMERS = [lambda dir: dir,                        # no variation
+                                    lambda dir: "".join(dir.split(" ")),    # remove spaces
+                                    lambda dir: "_".join(dir.split(" ")),   # separate with underscores
+                                    lambda dir: "-".join(dir.split(" "))]   # separate with hyphens
+
+
+def get_possible_directory_variations(directory):
+    if directory.find(" ") < 0:
+        return [directory]
+
+    return [transform(directory) for transform in DIRECTORY_VARIATION_TRANSFORMERS]
 
 
 def get_valid_path_variations(path):
