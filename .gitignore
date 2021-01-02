@@ -124,3 +124,5 @@ dmypy.json
 
 # VSCode Python interpreter path setting
 .vscode/settings.json
+
+settings.ini

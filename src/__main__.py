@@ -1,21 +1,10 @@
 from infi.systray import SysTrayIcon
+from src import *
 from sys import exit
-from src.constants import Constants
-from src.path_utils import *
+from src.pathutils import *
 import logging
 import os
 import speech_recognition as sr
-
-# logging configuration
-logs_dir = os.path.join(Constants.PROJECT_DIRECTORY, "logs")
-if not path_exists(logs_dir):
-    os.mkdir(logs_dir)
-log_file_path = os.path.join(logs_dir, "logs.log")
-logging.basicConfig(filename=log_file_path, format="%(asctime)s :: "
-                                                   "%(levelname)-8s :: "
-                                                   "%(name)s :: "
-                                                   "%(funcName)s :: "
-                                                   "%(message)s", level=logging.NOTSET)
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +34,7 @@ def do_nothing(sys_tray_icon):
 def process_input(voice_input):
     path = parse_path(voice_input)
 
-    if not path_exists(path):
+    if not os.path.exists(path):
         path_variations = get_valid_path_variations(path)
         if len(path_variations) == 0:
             logger.info(f"Could not find any valid paths for: \"{voice_input}\"")
@@ -61,6 +50,7 @@ def process_input(voice_input):
 
 def listen():
     logger.info("Listening...")
+    activation_phrase = USER_SETTINGS.get(SETTINGS_SECTION_KEYWORDS, SETTINGS_KEY_ACTIVATION)
     while True:
         # obtain audio from the microphone
         recognizer = sr.Recognizer()
@@ -76,8 +66,8 @@ def listen():
             voice_input = recognizer.recognize_google(audio).lower()
             print("Google Speech Recognition thinks you said: \"" + voice_input + "\"")
             logger.info("Google Speech Recognition thinks you said: \"" + voice_input + "\"")
-            if voice_input.startswith(Constants.ACTIVATION_PHRASE):
-                process_input(voice_input[len(Constants.ACTIVATION_PHRASE):])
+            if voice_input.startswith(activation_phrase):
+                process_input(voice_input[len(activation_phrase):])
 
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
@@ -89,7 +79,7 @@ def main():
     try:
         logger.info("Application started")
 
-        application_icon_path = os.path.join(Constants.PROJECT_DIRECTORY, "icons", "python_icon.ico")
+        application_icon_path = os.path.join(PROJECT_DIRECTORY, "icons", "python_icon.ico")
         menu_options = (('Say Hello', application_icon_path, hello),
                         (
                             "Settings", application_icon_path,
@@ -98,7 +88,7 @@ def main():
                              ))
                         )
 
-        sys_tray_icon = SysTrayIcon(application_icon_path, Constants.PROJECT_NAME,
+        sys_tray_icon = SysTrayIcon(application_icon_path, PROJECT_NAME,
                                     menu_options, on_quit=exit_application, default_menu_index=1)
         sys_tray_icon.start()
 

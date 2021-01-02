@@ -1,7 +1,7 @@
+from src import *
 import logging
 import os
 import subprocess
-from src.constants import Constants
 
 logger = logging.getLogger(__name__)
 
@@ -12,43 +12,36 @@ def parse_path(string):
         return ""
 
     path = string.strip()
-    path = path.lower().replace(Constants.SEPARATOR_WORD, Constants.SEPARATOR_CHAR)
-    path = path.replace("/", Constants.SEPARATOR_CHAR)
-    path = path.replace("\\", Constants.SEPARATOR_CHAR)
-    path = path.replace(" " + Constants.SEPARATOR_CHAR, Constants.SEPARATOR_CHAR)
-    path = path.replace(Constants.SEPARATOR_CHAR + " ", Constants.SEPARATOR_CHAR)
+    path = path.lower().replace(USER_SETTINGS.get(SETTINGS_SECTION_KEYWORDS, SETTINGS_KEY_SEPARATOR), SEPARATOR_CHAR)
+    path = path.replace("/", SEPARATOR_CHAR)
+    path = path.replace("\\", SEPARATOR_CHAR)
+    path = path.replace(" " + SEPARATOR_CHAR, SEPARATOR_CHAR)
+    path = path.replace(SEPARATOR_CHAR + " ", SEPARATOR_CHAR)
 
-    path = path.split(Constants.SEPARATOR_CHAR)
+    path = path.split(SEPARATOR_CHAR)
 
-    if Constants.DRIVES.count(path[0].upper()) > 0:
+    if DRIVES.count(path[0].upper()) > 0:
         path[0] = path[0] + ":"
 
-    return Constants.SEPARATOR_CHAR.join(path)
-
-
-def path_exists(path):
-    return (os.path.exists(path) or
-            os.path.exists(Constants.SEPARATOR_CHAR + path + Constants.SEPARATOR_CHAR) or
-            os.path.exists(Constants.SEPARATOR_CHAR + path) or
-            os.path.exists(path + Constants.SEPARATOR_CHAR))
+    return SEPARATOR_CHAR.join(path)
 
 
 def open_path(path):
     path = os.path.realpath(path)
-    if Constants.OPERATING_SYSTEM == Constants.WINDOWS:
+    if OPERATING_SYSTEM == WINDOWS:
         os.startfile(path)
-    elif Constants.OPERATING_SYSTEM == Constants.MAC_OS:
+    elif OPERATING_SYSTEM == MAC_OS:
         subprocess.Popen(["open", path])
     else:
         subprocess.Popen(["xdg-open", path])
 
 
 def convert_list_to_path(list):
-    return Constants.SEPARATOR_CHAR.join(list)
+    return SEPARATOR_CHAR.join(list)
 
 
 def convert_path_to_list(path):
-    return path.split(Constants.SEPARATOR_CHAR)
+    return path.split(SEPARATOR_CHAR)
 
 
 DIRECTORY_VARIATION_TRANSFORMERS = [lambda dir: dir,                        # no variation
@@ -87,12 +80,12 @@ def get_valid_path_variations(path):
     while root == "":
         root = directories.pop(0)
 
-    if Constants.OPERATING_SYSTEM != "Windows":
+    if OPERATING_SYSTEM != "Windows":
         root = "/" + root
 
     valid_path_variations = [[root]]
 
-    if not path_exists(root):
+    if not os.path.exists(root):
         return []
 
     for directory in directories:
@@ -106,8 +99,8 @@ def get_valid_path_variations(path):
             path_string = convert_list_to_path(path)
 
             for possibleVariation in possible_variations:
-                possible_path = path_string + Constants.SEPARATOR_CHAR + possibleVariation
-                if path_exists(possible_path):
+                possible_path = path_string + SEPARATOR_CHAR + possibleVariation
+                if os.path.exists(possible_path):
                     new_valid_path_variations.append(path + [possibleVariation])
 
         valid_path_variations = new_valid_path_variations[::]
