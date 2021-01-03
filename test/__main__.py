@@ -1,14 +1,14 @@
-import unittest
 from collections import Counter
-from pathutils import *
 from shutil import rmtree
 from src import *
+from src.pathutils import *
+import unittest
 
 
 class PathUtilsTest(unittest.TestCase):
 
     def test_parse_path(self):
-        actual = parse_path("c: {0} program files {0} riot games".format(USER_SETTINGS.get(SETTINGS_SECTION_KEYWORDS, SETTINGS_KEY_SEPARATOR)))
+        actual = parse_path("c: {0} program files {0} riot games".format(SETTINGS_DEFAULT_SEPARATOR))
         expected = "c:{0}program files{0}riot games".format(SEPARATOR_CHAR)
         self.assertEqual(actual, expected)
 
@@ -28,10 +28,10 @@ class PathUtilsTest(unittest.TestCase):
         rmtree(PROJECT_DIRECTORY + "/testdirectory/")
 
     def test_get_valid_path_variations_non_str_input(self):
-        self.assertRaises(ValueError, get_valid_path_variations, 5)
+        self.assertEqual(get_valid_path_variations(5), [])
 
     def test_get_valid_path_variations_empty_str_input(self):
-        self.assertRaises(ValueError, get_valid_path_variations, "")
+        self.assertEqual(get_valid_path_variations(""), [])
 
 
 if __name__ == "__main__":

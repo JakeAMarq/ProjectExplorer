@@ -72,7 +72,7 @@ def get_valid_path_variations(path):
 
     if path == "":
         logger.error("get_valid_path_variations :: empty str argument given")
-        raise []
+        return []
 
     directories = convert_path_to_list(path)
 
